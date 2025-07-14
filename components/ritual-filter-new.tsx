@@ -17,7 +17,7 @@ interface RitualFilterNewProps {
 }
 
 export function RitualFilterNew({ reflectionId, reflectionText, onApply }: RitualFilterNewProps) {
-  // Local state
+  // Local state with a default value that's guaranteed to be valid
   const [activeRitualType, setActiveRitualType] = useState<RitualType>("mirror")
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +25,20 @@ export function RitualFilterNew({ reflectionId, reflectionText, onApply }: Ritua
 
   // Handle ritual type change
   const handleRitualChange = useCallback((value: string) => {
+    // Validate that the value is a valid ritual type
+    const isValidRitualType = ritualDefinitions.some((ritual) => ritual.id === value)
+
+    if (!isValidRitualType) {
+      console.error(`Invalid ritual type selected: ${value}`)
+      setError(`Invalid ritual type: ${value}`)
+      return
+    }
+
+    console.log(`Ritual type changed to: ${value}`)
+
+    // Set the ritual type state
     setActiveRitualType(value as RitualType)
+
     // Reset output when changing ritual type
     setOutput(null)
     setError(null)
@@ -35,11 +48,34 @@ export function RitualFilterNew({ reflectionId, reflectionText, onApply }: Ritua
   const processReflection = useCallback(async () => {
     if (isProcessing || !reflectionText) return
 
+    // Get the current ritual type from state
+    const currentRitualType = activeRitualType
+
+    // Add validation for ritual type
+    if (!currentRitualType) {
+      setError("No ritual type selected. Please select a ritual type first.")
+      return
+    }
+
+    console.log(`Processing reflection with ritual type: ${currentRitualType}`)
+
     setIsProcessing(true)
     setError(null)
 
     try {
-      const result = await ritualService.processReflection(reflectionText, activeRitualType)
+      // Create the request object with explicit ritual type
+      // Important: Send as a direct object, not an array
+      const request = {
+        text: reflectionText,
+        ritualType: currentRitualType,
+      }
+
+      console.log("Sending request to ritual service:", request)
+
+      const result = await ritualService.processReflection(request)
+
+      console.log("Received result from ritual service:", result)
+
       setOutput(result.processedText)
     } catch (error) {
       console.error("Error processing reflection:", error)
@@ -47,7 +83,7 @@ export function RitualFilterNew({ reflectionId, reflectionText, onApply }: Ritua
     } finally {
       setIsProcessing(false)
     }
-  }, [reflectionText, activeRitualType, isProcessing])
+  }, [reflectionText, isProcessing, activeRitualType])
 
   // Apply the processed output
   const handleApply = useCallback(() => {
@@ -59,7 +95,12 @@ export function RitualFilterNew({ reflectionId, reflectionText, onApply }: Ritua
 
   return (
     <div className="space-y-4">
-      <Tabs defaultValue="mirror" onValueChange={handleRitualChange} className="w-full">
+      <Tabs
+        defaultValue="mirror"
+        onValueChange={handleRitualChange}
+        className="w-full"
+        value={activeRitualType} // Explicitly set the value to ensure it's controlled
+      >
         <TabsList className="grid grid-cols-4 bg-gray-900/80 border border-gray-800 rounded-md p-1">
           {ritualDefinitions.map((ritual) => (
             <TabsTrigger

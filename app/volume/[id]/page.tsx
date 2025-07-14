@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { formatDate } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { MawVisual } from "@/components/maw-visual"
+import { DebugButton } from "@/components/debug-button"
 import type { Reflection } from "@/lib/types"
 
 export default function VolumePage() {
@@ -32,11 +33,16 @@ export default function VolumePage() {
 
   // Find the reflection once when the component mounts or id changes
   useEffect(() => {
+    console.log(`Loading reflection with ID: ${id}`)
+
     if (id) {
       const found = reflections.find((r) => r.id === id) || null
       setReflection(found)
       if (found) {
         setEditedInput(found.input)
+        console.log(`Found reflection:`, found)
+      } else {
+        console.log(`Reflection not found with ID: ${id}`)
       }
       setIsLoading(false)
     }
@@ -59,6 +65,8 @@ export default function VolumePage() {
 
   const handleApplyRitual = useCallback(
     (processedOutput: string) => {
+      console.log(`Applying processed output to reflection: ${id}`)
+
       if (id) {
         updateReflection(id, { processedOutput })
       }
@@ -248,16 +256,22 @@ export default function VolumePage() {
             >
               <h2 className="text-xl font-serif mb-4 text-white">Apply Ritual Filter</h2>
               <div className="bg-gray-900/60 backdrop-blur-sm p-6 rounded-lg border border-gray-800 shadow-lg transition-all duration-300 hover:border-gray-700">
-                <RitualFilterNew
-                  reflectionId={reflection.id}
-                  reflectionText={reflection.input}
-                  onApply={handleApplyRitual}
-                />
+                {/* Ensure we're passing the required props */}
+                {reflection && (
+                  <RitualFilterNew
+                    reflectionId={reflection.id}
+                    reflectionText={reflection.input}
+                    onApply={handleApplyRitual}
+                  />
+                )}
               </div>
             </motion.div>
           )}
         </div>
       </div>
+
+      {/* Add the debug button */}
+      <DebugButton />
     </div>
   )
 }

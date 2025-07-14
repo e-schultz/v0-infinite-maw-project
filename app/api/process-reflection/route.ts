@@ -2,6 +2,9 @@ import { NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 
+// Valid ritual types for validation
+const VALID_RITUAL_TYPES = ["mirror", "reverse", "poetic", "structural"]
+
 export async function POST(request: Request) {
   try {
     const { text, filter } = await request.json()
@@ -9,6 +12,24 @@ export async function POST(request: Request) {
     if (!text) {
       return NextResponse.json({ error: "Text is required" }, { status: 400 })
     }
+
+    // Validate filter/ritual type
+    if (!filter) {
+      return NextResponse.json({ error: "Filter/ritual type is required but was undefined or empty" }, { status: 400 })
+    }
+
+    // Check if filter is valid
+    if (!VALID_RITUAL_TYPES.includes(filter)) {
+      return NextResponse.json(
+        {
+          error: `Invalid filter/ritual type: ${filter}. Must be one of: ${VALID_RITUAL_TYPES.join(", ")}`,
+        },
+        { status: 400 },
+      )
+    }
+
+    // Log for debugging
+    console.log(`Processing reflection with filter/ritual type: ${filter}`)
 
     let prompt = ""
 
@@ -55,7 +76,8 @@ export async function POST(request: Request) {
         `
         break
       default:
-        prompt = `Reflect on the following text: "${text}"`
+        // This should never happen due to validation above, but just in case
+        return NextResponse.json({ error: `Unsupported filter type: ${filter}` }, { status: 400 })
     }
 
     const { text: processedText } = await generateText({
