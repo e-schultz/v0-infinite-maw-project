@@ -1,9 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
+import type { Reflection } from "@/lib/types"
 import { formatDate } from "@/lib/utils"
 import Link from "next/link"
-import type { Reflection } from "@/lib/types" // Fixed import path
 
 interface RecursiveTraceProps {
   reflections: Reflection[]

@@ -63,7 +63,6 @@
     position: relative;
     display: inline-block;
     animation: subtle-glitch 8s infinite;
-    text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.4), -0.05em -0.025em 0 rgba(0, 255, 255, 0.4);
   }
 
   .glitch-text::before,
@@ -82,7 +81,6 @@
     clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
     transform: translate(-0.025em, -0.0125em);
     opacity: 0.8;
-    text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.75), -0.05em -0.025em 0 rgba(0, 255, 255, 0.75);
   }
 
   .glitch-text::after {
@@ -90,7 +88,6 @@
     clip-path: polygon(0 80%, 100% 20%, 100% 100%, 0 100%);
     transform: translate(0.025em, 0.025em);
     opacity: 0.8;
-    text-shadow: -0.05em 0 0 rgba(255, 0, 255, 0.75), 0.05em 0.025em 0 rgba(0, 255, 255, 0.75);
   }
 
   @keyframes subtle-glitch {
@@ -100,17 +97,8 @@
     15% {
       text-shadow: -0.05em -0.025em 0 rgba(255, 0, 255, 0.4), 0.025em 0.025em 0 rgba(0, 255, 255, 0.4);
     }
-    30% {
-      text-shadow: -0.05em -0.025em 0 rgba(255, 0, 255, 0.4), 0.025em 0.025em 0 rgba(0, 255, 255, 0.4);
-    }
-    45% {
+    50% {
       text-shadow: 0.05em 0.05em 0 rgba(255, 0, 255, 0.4), 0.05em 0 0 rgba(0, 255, 255, 0.4);
-    }
-    60% {
-      text-shadow: 0.05em 0.05em 0 rgba(255, 0, 255, 0.4), -0.05em 0 0 rgba(0, 255, 255, 0.4);
-    }
-    75% {
-      text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.4), -0.05em -0.025em 0 rgba(0, 255, 255, 0.4);
     }
     100% {
       text-shadow: 0.05em 0 0 rgba(255, 0, 255, 0.4), -0.05em -0.025em 0 rgba(0, 255, 255, 0.4);
@@ -121,115 +109,21 @@
     0% {
       transform: translate(0);
     }
-    10% {
-      transform: translate(-2px, 2px);
-    }
     20% {
-      transform: translate(-2px, -2px);
-    }
-    30% {
-      transform: translate(2px, 2px);
+      transform: translate(-0.5px, 0.5px);
     }
     40% {
-      transform: translate(2px, -2px);
-    }
-    50% {
-      transform: translate(-1px, 1px);
+      transform: translate(-0.5px, -0.5px);
     }
     60% {
-      transform: translate(1px, 1px);
-    }
-    70% {
-      transform: translate(2px, 1px);
+      transform: translate(0.5px, 0.5px);
     }
     80% {
-      transform: translate(-1px, -1px);
-    }
-    90% {
-      transform: translate(1px, 2px);
+      transform: translate(0.5px, -0.5px);
     }
     100% {
       transform: translate(0);
     }
-  }
-
-  /* Button styling enhancements */
-  .maw-button-primary {
-    @apply bg-purple-900 hover:bg-purple-800 text-white transition-all duration-300;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
-  }
-
-  .maw-button-primary:hover {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .maw-button-secondary {
-    @apply bg-white text-gray-800 border-gray-300 hover:bg-gray-100 hover:text-gray-900 font-medium transition-all duration-300;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  }
-
-  .maw-button-secondary:hover {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-  }
-
-  /* Dark mode button styling */
-  .dark .maw-button-secondary {
-    @apply bg-gray-800 text-white border-gray-700 hover:bg-gray-700;
-  }
-
-  /* Card styling enhancements */
-  .maw-card {
-    @apply bg-gray-900 border border-gray-800 rounded-lg p-4 transition-all duration-300;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .maw-card:hover {
-    @apply border-gray-700;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Gradient backgrounds */
-  .maw-bg-gradient {
-    background: linear-gradient(to bottom, #13111c, #1f1b2e);
-  }
-
-  .maw-bg-gradient-subtle {
-    background: linear-gradient(to bottom, rgba(19, 17, 28, 0.7), rgba(31, 27, 46, 0.7));
-  }
-
-  /* Pulse animation for visual elements */
-  .maw-pulse {
-    animation: maw-pulse 4s infinite ease-in-out;
-  }
-
-  @keyframes maw-pulse {
-    0% {
-      opacity: 0.7;
-    }
-    50% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0.7;
-    }
-  }
-
-  /* Improved textarea styling for better readability */
-  .maw-textarea {
-    background-color: rgba(17, 17, 27, 0.95);
-    color: white;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-  }
-
-  .maw-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* Ensure text is readable on all backgrounds */
-  .text-readable {
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
   }
 }
 

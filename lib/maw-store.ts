@@ -1,45 +1,21 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
+import type { Reflection, RitualHistoryEntry } from "./types"
 import { v4 as uuidv4 } from "uuid"
-import type { Reflection } from "@/lib/types"
-import type { RitualType } from "@/lib/rituals"
 
 interface MawState {
   reflections: Reflection[]
-  ritualProcessing: {
-    isProcessing: boolean
-    error: string | null
-    activeReflectionId: string | null
-    activeRitualType: RitualType | null
-    processedOutput: string | null
-  }
-
-  // Reflection actions
   addReflection: (input: string) => string
   updateReflection: (id: string, data: Partial<Reflection>) => void
   deleteReflection: (id: string) => void
-
-  // Ritual processing actions
-  setRitualProcessing: (isProcessing: boolean) => void
-  setRitualError: (error: string | null) => void
-  setActiveReflection: (id: string | null, ritualType: RitualType | null) => void
-  setProcessedOutput: (output: string | null) => void
-  resetRitualState: () => void
+  addRitualHistory: (reflectionId: string, historyEntry: Omit<RitualHistoryEntry, "id">) => void
 }
 
 export const useMawStore = create<MawState>()(
   persist(
     (set) => ({
       reflections: [],
-      ritualProcessing: {
-        isProcessing: false,
-        error: null,
-        activeReflectionId: null,
-        activeRitualType: null,
-        processedOutput: null,
-      },
 
-      // Reflection actions
       addReflection: (input: string) => {
         const id = uuidv4()
         const tones = ["raw", "mirror", "devotional", "fractured"] as const
@@ -77,6 +53,7 @@ export const useMawStore = create<MawState>()(
           date: new Date().toISOString(),
           tone: randomTone,
           tags: potentialTags,
+          ritualHistory: [],
         }
 
         set((state) => ({
@@ -100,55 +77,27 @@ export const useMawStore = create<MawState>()(
         }))
       },
 
-      // Ritual processing actions
-      setRitualProcessing: (isProcessing: boolean) => {
-        set((state) => ({
-          ritualProcessing: {
-            ...state.ritualProcessing,
-            isProcessing,
-            error: isProcessing ? null : state.ritualProcessing.error,
-          },
-        }))
-      },
+      addRitualHistory: (reflectionId: string, historyEntry: Omit<RitualHistoryEntry, "id">) => {
+        set((state) => {
+          const reflection = state.reflections.find((r) => r.id === reflectionId)
+          if (!reflection) return state
 
-      setRitualError: (error: string | null) => {
-        set((state) => ({
-          ritualProcessing: {
-            ...state.ritualProcessing,
-            error,
-          },
-        }))
-      },
+          const entry: RitualHistoryEntry = {
+            ...historyEntry,
+            id: uuidv4(),
+          }
 
-      setActiveReflection: (id: string | null, ritualType: RitualType | null) => {
-        set((state) => ({
-          ritualProcessing: {
-            ...state.ritualProcessing,
-            activeReflectionId: id,
-            activeRitualType: ritualType,
-          },
-        }))
-      },
-
-      setProcessedOutput: (output: string | null) => {
-        set((state) => ({
-          ritualProcessing: {
-            ...state.ritualProcessing,
-            processedOutput: output,
-          },
-        }))
-      },
-
-      resetRitualState: () => {
-        set((state) => ({
-          ritualProcessing: {
-            isProcessing: false,
-            error: null,
-            activeReflectionId: null,
-            activeRitualType: null,
-            processedOutput: null,
-          },
-        }))
+          return {
+            reflections: state.reflections.map((r) =>
+              r.id === reflectionId
+                ? {
+                    ...r,
+                    ritualHistory: [...(r.ritualHistory || []), entry],
+                  }
+                : r,
+            ),
+          }
+        })
       },
     }),
     {

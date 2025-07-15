@@ -5,6 +5,8 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { MawStateProvider } from "@/lib/maw-state-provider"
+import { MawGuide } from "@/components/maw-guide"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 const playfair = Playfair_Display({
@@ -24,13 +26,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${inter.variable} ${playfair.variable} font-sans bg-[#13111c]`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${playfair.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <MawStateProvider>
-            {children}
-            <Toaster />
-          </MawStateProvider>
+          <TooltipProvider>
+            <MawStateProvider>
+              <main className="min-h-screen bg-gradient-to-b from-black to-gray-900">{children}</main>
+              <MawGuide />
+              <Toaster />
+            </MawStateProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

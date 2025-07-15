@@ -4,18 +4,34 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { getAllRituals } from "@/lib/rituals"
-import { useEffect, useState } from "react"
-import type { RitualDefinition } from "@/lib/rituals"
 
 export default function RitualsPage() {
-  // Use state to handle client-side rendering
-  const [rituals, setRituals] = useState<RitualDefinition[]>([])
-
-  useEffect(() => {
-    // Get all available rituals from the registry
-    setRituals(getAllRituals())
-  }, [])
+  const rituals = [
+    {
+      name: "Mirror Trace",
+      codeName: "mirrorTrace",
+      description: "Reflective recursion: reveals unconscious thought forms, echoes, and dissonance.",
+      icon: "🪞",
+    },
+    {
+      name: "Rufo Test",
+      codeName: "rufoTest",
+      description: "Persona reversal: reveals bias, blind spots, and ideological inversion (System 2 test).",
+      icon: "↔️",
+    },
+    {
+      name: "Oracle Voice",
+      codeName: "oracleVoice",
+      description: "Lyrical invocation: renders text as dream-logic, archetype, or poetic code.",
+      icon: "🎭",
+    },
+    {
+      name: "Sigil Map",
+      codeName: "sigilMap",
+      description: "Structural trace: renders architecture of thought in patterns, themes, and logic flows.",
+      icon: "🏛️",
+    },
+  ]
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -38,7 +54,7 @@ export default function RitualsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {rituals.map((ritual) => (
-              <Card key={ritual.id} className="bg-gray-900 border-gray-800">
+              <Card key={ritual.codeName} className="bg-gray-900 border-gray-800">
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{ritual.icon}</span>

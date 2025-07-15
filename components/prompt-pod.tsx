@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { useMawStore } from "@/lib/store"
+import { useMawStore } from "@/lib/maw-store"
 import { motion } from "framer-motion"
 import { Send } from "lucide-react"
 
@@ -21,21 +21,15 @@ export function PromptPod({ onReflectionCreated }: PromptPodProps) {
 
     setIsSubmitting(true)
 
-    try {
-      // Simulate processing delay
-      await new Promise((resolve) => setTimeout(resolve, 800))
+    // Simulate processing delay
+    await new Promise((resolve) => setTimeout(resolve, 800))
 
-      const id = addReflection(input)
-      setInput("")
+    const id = addReflection(input)
+    setInput("")
+    setIsSubmitting(false)
 
-      if (onReflectionCreated) {
-        onReflectionCreated(id)
-      }
-    } catch (error) {
-      console.error("Error creating reflection:", error)
-      // Could add error handling UI here
-    } finally {
-      setIsSubmitting(false)
+    if (onReflectionCreated) {
+      onReflectionCreated(id)
     }
   }
 
@@ -46,16 +40,20 @@ export function PromptPod({ onReflectionCreated }: PromptPodProps) {
       transition={{ duration: 0.5 }}
       className="w-full"
     >
-      <div className="bg-gray-900/90 backdrop-blur-md rounded-lg border border-gray-800 overflow-hidden shadow-xl transition-all duration-300 hover:border-gray-700 hover:shadow-purple-900/20">
+      <div className="bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Enter your reflection..."
-          className="min-h-[150px] text-lg font-serif bg-gray-900/95 text-white border-none resize-none p-4 focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
+          className="min-h-[150px] text-lg font-serif bg-transparent border-none resize-none p-4 focus-visible:ring-0 focus-visible:ring-offset-0"
         />
 
         <div className="p-3 flex justify-end border-t border-gray-800">
-          <Button onClick={handleSubmit} disabled={!input.trim() || isSubmitting} className="maw-button-primary">
+          <Button
+            onClick={handleSubmit}
+            disabled={!input.trim() || isSubmitting}
+            className="bg-purple-900 hover:bg-purple-800"
+          >
             {isSubmitting ? (
               <motion.div
                 animate={{ rotate: 360 }}
